@@ -5,3 +5,7 @@ this is my initial README file. I will update this page every week along with pr
   1. Created this repository for keep track of SWE 573 project progress
   2. Researched usage of git and summarized it in wiki page
   3. Costumized the issue tags with my perspective
+## v0.2 
+  1. Created endpoints for login, register, post, comment.
+  2. Jwt tokens used for autherization.
+ 
