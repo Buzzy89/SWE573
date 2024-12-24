@@ -3,6 +3,8 @@
 ## Project Overview
 Mystical Object Emporium is a full-stack web application for sharing and discovering unique objects. Users can post items with detailed descriptions, physical attributes, and AI-assisted object recognition through WikiData integration.
 
+My client project is in here : https://github.com/Buzzy89/client
+
 ## Technical Stack
 
 ### Frontend (Next.js)
