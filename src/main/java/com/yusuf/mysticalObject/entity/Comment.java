@@ -1,5 +1,9 @@
 package com.yusuf.mysticalObject.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.yusuf.mysticalObject.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,27 +27,42 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String content;
+
+    @JsonBackReference("post-comments")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "comments"})
     private Post post;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_comment_id")
-    private Comment parentComment;
+    @JsonBackReference("parent-comments")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Comment parent;
 
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> replies;
-
-    private String content;
+    @JsonManagedReference("parent-comments")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "parent"})
+    @Builder.Default
+    private List<Comment> replies = new ArrayList<>();
 
     @CreationTimestamp
     private Date createdAt;
 
     @UpdateTimestamp
     private Date updatedAt;
+
+    @Transient
+    private UserDTO user;
+
+    @Transient
+    public Long getPostId() {
+        return post != null ? post.getId() : null;
+    }
 }
 

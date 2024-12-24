@@ -1,16 +1,15 @@
 package com.yusuf.mysticalObject.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,23 +22,61 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "post_tags",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
+    private String mediaUrl;
+
+    @ElementCollection
+    @Builder.Default
+    private List<String> shapes = new ArrayList<>();
+
+    @ElementCollection
+    @Builder.Default
+    private List<String> colors = new ArrayList<>();
+
+    @ElementCollection
+    @Builder.Default
+    private List<String> materials = new ArrayList<>();
+
+    @ManyToMany
+    @Builder.Default
+    private Set<WikiDataLabel> wikiDataLabels = new HashSet<>();
+
+    private int weight;
+    private int height;
+    private int width;
+    private int depth;
+
+    @ManyToMany
+    @Builder.Default
     private Set<Tag> tags = new HashSet<>();
 
-    @CreationTimestamp
-    private Date createdAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User author;
 
-    @UpdateTimestamp
-    private Date updatedAt;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<Comment> comments = new HashSet<>();
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    public User getUser() {
+        return author;
+    }
+
+    public void setUser(User user) {
+        this.author = user;
+    }
 }

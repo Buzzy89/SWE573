@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gcp:
+      credentials:
+        location: classpath:mysticalobjectemporium-444521-88fda94ddf96.json
+      project-id: mysticalobjectemporium-444521 
+
+gcp:
+  bucket:
+    name: mysticalobjectemporium 

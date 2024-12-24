@@ -1,17 +1,16 @@
 package com.yusuf.mysticalObject.dto;
 
+import lombok.Data;
+
+@Data
 public class AuthResponse {
 
     private String token;
+    private UserResponse user;
 
-    public AuthResponse(String token) {
+    public AuthResponse(String token, UserResponse user) {
         this.token = token;
-    }
-    public String getToken() {
-        return token;
-    }
-    public void setToken(String token) {
-        this.token = token;
+        this.user = user;
     }
 
 }
