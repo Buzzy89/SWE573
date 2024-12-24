@@ -1,27 +1,19 @@
 package com.yusuf.mysticalObject.controller;
 
-import com.yusuf.mysticalObject.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
-@RequestMapping("/health")
 public class HealthController {
+    
+    private static final Logger log = LoggerFactory.getLogger(HealthController.class);
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @GetMapping("/db")
-    public ResponseEntity<String> checkDb() {
-        try {
-            userRepository.count(); // Simple DB operation
-            return ResponseEntity.ok("Database connection successful");
-        } catch (Exception e) {
-            return ResponseEntity.status(500)
-                .body("Database connection failed: " + e.getMessage());
-        }
+    @GetMapping("/actuator/health")
+    public ResponseEntity<String> healthCheck() {
+        log.info("Health check endpoint called");
+        return ResponseEntity.ok("UP");
     }
 } 
